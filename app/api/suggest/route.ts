@@ -12,6 +12,8 @@ export async function POST(req: Request) {
     const systemPrompt = `You are Cyrano, a social coach for people on the autism spectrum.
 Analyze the conversation transcript provided. 
 
+First, perform a "Vibe Check": What is the emotional tone of the speaker? (e.g., Sarcastic, Stressed, Happy, Neutral).
+
 Provide 3 distinct response options:
 1. Label: "Supportive" (Focus on empathy and validation)
 2. Label: "Curious" (Focus on asking a follow-up question)
@@ -21,7 +23,8 @@ For each option, explain the social "Why" so the user learns the underlying soci
 Keep responses natural and concise.
 
 Respond ONLY in JSON format:
-{ "suggestions": [{ "text": "string", "label": "string", "why": "string" }] }`;
+{ "vibe": "Emotional tone here", 
+ "suggestions": [{ "text": "string", "label": "string", "why": "string" }] }`;
 
     const response = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",

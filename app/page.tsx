@@ -11,6 +11,7 @@ interface Suggestion {
 export default function CyranoPage() {
   const [transcript, setTranscript] = useState<string>("");
   const [history, setHistory] = useState<{role: string, content: string}[]>([]);
+  const [vibe, setVibe] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -58,6 +59,7 @@ export default function CyranoPage() {
       const data = await response.json();
       if (data.suggestions) {
         setSuggestions(data.suggestions);
+        setVibe(data.vibe);
       }
     } catch (error) {
       console.error("Cyrano API Error:", error);
@@ -98,6 +100,16 @@ export default function CyranoPage() {
             </div>
           )}
         </div>
+
+        {vibe && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-center gap-3 animate-in fade-in zoom-in">
+            <div className="text-2xl">🧠</div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-amber-600">Vibe Check</p>
+              <p className="text-amber-900 font-semibold">{vibe}</p>
+              </div>
+            </div>
+          )}
 
         {/* Suggestions Section */}
         <div className="space-y-4">
