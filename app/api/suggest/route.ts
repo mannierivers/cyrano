@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import Groq from 'groq-sdk';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
 });
 
 export async function POST(req: Request) {
@@ -14,37 +14,33 @@ Analyze the conversation transcript provided.
 
 Provide 3 distinct response options:
 1. Label: "Supportive" (Focus on empathy and validation)
-2. Label: "Curious" (Focus on asking a follow-up question to keep the conversation going)
+2. Label: "Curious" (Focus on asking a follow-up question)
 3. Label: "Direct" (A polite but clear response for clarity)
 
 For each option, explain the social "Why" so the user learns the underlying social cue.
 Keep responses natural and concise.
 
-Respond ONLY in JSON:
+Respond ONLY in JSON format:
 { "suggestions": [{ "text": "string", "label": "string", "why": "string" }] }`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
       messages: [
-        {
-          role: "system",
-          content: `You are Cyrano, a social coach for people on the autism spectrum. 
-          Analyze the transcript and provide 3 appropriate response options.
-          Respond ONLY in JSON: { "suggestions": [{ "text": "", "label": "", "why": "" }] }`
-        },
+        { role: "system", content: systemPrompt },
         ...(history || []),
         { role: "user", content: transcript }
       ],
+      // Groq supports JSON mode just like OpenAI
       response_format: { type: "json_object" },
+      temperature: 0.7,
     });
 
     const content = response.choices[0].message.content;
-    if (!content) throw new Error("No content from OpenAI");
+    if (!content) throw new Error("No content from Groq");
 
-    const data = JSON.parse(content);
-    return NextResponse.json(data);
+    return NextResponse.json(JSON.parse(content));
   } catch (error) {
-    console.error(error);
+    console.error("Groq API Error:", error);
     return NextResponse.json({ error: "Failed to fetch suggestions" }, { status: 500 });
   }
 }
