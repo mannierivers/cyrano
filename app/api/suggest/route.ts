@@ -7,39 +7,42 @@ export async function POST(req: Request) {
   try {
     const { transcript, mode } = await req.json();
 
-    const systemPrompt = `You are the Cyrano Neural Interface. 
-Context: ${mode}.
-Analyze the stream and return:
-1. Vibe: Technical diagnostic (e.g., "Sarcasm Detected: 85% Intensity").
-2. Vibe_Color: 'red', 'orange', 'green', 'blue'.
-3. 3 Strategic Responses: Sleek, high-impact phrasing.
-Respond ONLY in JSON.`;
+    const systemPrompt = `
+      IDENT_SYSTEM: SUBTX_INTELLIGENCE_ENGINE
+      PROTOCOL: NEURAL_SOCIAL_SCAFFOLDING
+      CONTEXT: ${mode.toUpperCase()}
+      
+      TASK: Decode social transmission (TX) for neurodivergent users.
+      1. ANALYZE: Detect latent subtext, emotional velocity, and speaker intent.
+      2. DIAGNOSE: Return a 2-3 word "Vibe Check" + Vibe_Color (red/orange/green/blue).
+      3. STRATEGIZE: Provide 3 high-impact dialogue modules.
+      
+      STRICT JSON FORMAT:
+      {
+        "vibe": "Diagnostic string here",
+        "vibe_color": "color_code",
+        "suggestions": [
+          { "text": "Direct response", "label": "Strategic Label", "why": "Rationale" }
+        ]
+      }
+    `;
 
     const response = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: `Analyze this: "${transcript}"` }
+        { role: "user", content: `INPUT_STREAM: "${transcript}"` }
       ],
-      response_format: { type: "json_object" }, // Forces Groq to output JSON
-      temperature: 0.7,
+      response_format: { type: "json_object" },
+      temperature: 0.6, // Slightly lower for more consistent "Professional" advice
     });
 
     const content = response.choices[0].message.content;
-    console.log("AI Raw Output:", content); // Check your terminal to see this!
+    if (!content) throw new Error("NULL_STREAM");
 
-    if (!content) throw new Error("AI returned nothing");
-
-    // Robust parsing
-    const parsedData = JSON.parse(content);
-    return NextResponse.json(parsedData);
-
+    return NextResponse.json(JSON.parse(content));
   } catch (error: any) {
-    console.error("API Error:", error);
-    return NextResponse.json({ 
-      vibe: "Error 😵‍💫", 
-      vibe_color: "red", 
-      suggestions: [{ text: "Check your terminal for errors.", label: "System", why: "Something went wrong" }] 
-    });
+    console.error("SUBTX_API_ERROR:", error);
+    return NextResponse.json({ error: "LINK_FAILURE" }, { status: 500 });
   }
 }
