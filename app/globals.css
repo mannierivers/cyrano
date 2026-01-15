@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@theme {
+  /* This tells Tailwind to use Quicksand whenever you use 'font-sans' */
+  --font-sans: var(--font-quicksand), ui-sans-serif, system-ui;
+  
+  /* Adding some custom 'soft' shadows for our playful look */
+  --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+@layer base {
+  body {
+    @apply bg-[#FDFCF0] text-slate-800;
+    /* Optional: making everything a bit smoother */
+    -webkit-font-smoothing: antialiased;
+  }
+}
