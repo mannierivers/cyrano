@@ -145,7 +145,7 @@ export default function SubtxOS() {
         <header className="flex justify-between items-center py-4 border-b border-white/5">
           <div className="flex items-center gap-3">
             <Cpu className="text-cyan-500 w-4 h-4 animate-pulse" />
-            <h1 className="text-[10px] font-black tracking-[0.5em] uppercase opacity-70">SUBTX_OS // LINK.V1</h1>
+            <h1 className="text-[10px] font-black tracking-[0.5em] uppercase opacity-70">SUBTX</h1>
           </div>
           <div className="flex items-center gap-3">
             {/* THE TRASH CAN (Purge Cache) */}

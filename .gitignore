@@ -42,3 +42,4 @@ next-env.d.ts
 
 #API keys and other sensitive info
 .env.local
+.env*.local
